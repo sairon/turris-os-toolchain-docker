@@ -1,0 +1,26 @@
+sudo: false
+
+language: c
+
+services:
+  - docker
+
+env:
+  global:
+    - PKG_BRANCH=test
+      # DOCKER_USERNAME
+    - secure: "w35JuCxC4jVw3gFv23GcUtB22viJCPe1lswd4Au41DD7OHPl7LnnvoHoKNexVj9MjN1MR3A2W15t9YYVtod70B6w9a4KFe/jHQ+3peRY6CbyNqg+9Y0wfhwluohdrWem1YBocKRpr+wnsu0xwd+pGK1QtQCuKnbWq/NaHW5Bw82y+W3q8eqi8xoWq79cZIVYUHoa4E683QXQcxFq+5L/KI+lHzdDu3siKVHZiPVa1z3KyN/32l5bxu4bU/nT49iBmNQ6ofWmnBOgi3zMcJ1CsTYTGAvoPWGyq10BykzI23+KZQf40mfRB1Vj7rp+I156HFT9T9hO9svaE/iEXibkppgSZaglXwIW5xXYctdSve7HrKV+6WNq8hkYXQgHe4OIORrHuZ4YFalJWr/hiYz4XmwG67Li7IyStF9fEWrPm43rqNnztGGbX6+tQkZAejGITHYeQasb6UlK+f/js68NpR+nt2Trsk7RIAoFpW+rStz6Z/kblMHL+7Cp/RIxdAHQD6p7LcmZw9+q7Zy8OnyC1kR+sDHFIpXRwbazitG4Oj2KNYvNXXXC7zjFMI0ySC5wuAjwxtLlZte+SY33yNxoDffLcSPVdnuKXGygdUORGE4See12A6DknQgHli7yBJ8c7Yk6Z0UDzQ4Sb9IVV+YAfa8tG/X8PWGy6MlIZh+4Wbs="
+      # DOCKER_PASSWORD
+    - secure: "chggbvnB7Gx0NJ/B8XhGQRWkSD19HWdOuMg9DZRasPiyJQAiQUgNlKXo5yCt8+tMtEWZGACXzpj1D8NszEjaXywWDYoMdn6Ro0vfHH9PVh6j28R4tdVbvZhWZOI2xzhgWEiFEcUFKK2VvEtKbDCKlmozeZJy7sHRACa3PlsxzTXRJo20WbhAfAiInSH4nPtlpxBm1Ly5mT5rHNbhP0ck1dsepOJdxlz30QY20WUYYrQwS6Iv5N453qfdgi42WhqjWcI9qGKndGTGaDvj0OpfJRwcGIpLfYo/0l4FJOftqDUUBQC4mnfCb59UsXVh0UbfDaEjX4mrtuioOIJr9jq48JCVltrsoUD2toarTBQ5TaulWewSwqEYmNhtU5kV4BrNKc2XgL0JGOQy97lpKmLuovawlJKZKjOLmVy+KC2HGOt5kaA03ljzK0eEunXHMv2Lab0HHGIkM9IT+QyKNoPtWD1O0e0fsfmgbRETcOXwD9laPzlTJlo9ldorj0IWtOs0lbP3t19J3t/3BZTi0M2gJRytLHLnDwzPHET6jymVVGA8sCo5UQzxJ3njQ1PkJttFNo3IPeyyqstqmje0KrabMQkEVxLQTvvV/crQnd20HAReIfh+jdXqPGVGTN5qLLS+aZSY1ucJrF/4BssrzPMRZ/L1GkuJa/Rt6ZkCkA5bceU="
+  matrix:
+    - TARGET_BOARD=turris
+    - TARGET_BOARD=omnia
+
+script:
+  - docker build -t "sairon/turris-os-toolchain-$TARGET_BOARD" .
+
+after_success:
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker push "sairon/turris-os-toolchain-$TARGET_BOARD"
+
+# TODO: trigger turris-os-sdk-docker build
